@@ -1,9 +1,7 @@
 "use strict";
 
 module.exports = {
-  //
   async up(queryInterface, Sequelize) {
-    //
     return await queryInterface.createTable("users", {
       id: {
         allowNull: false,
@@ -20,47 +18,38 @@ module.exports = {
         unique: true,
         allowNull: false,
       },
-      role: {
+      phone: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: "client",
+        allowNull: true,
       },
-      password: {
+      google_id: {
         type: Sequelize.STRING,
-        allowNull: false,
+        unique: true,
+        allowNull: true,
       },
       imagePath: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      IsVerify: {
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      is_verified: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: false
+        defaultValue: false,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      otpCode: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      otpAt: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      googleId: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: true
-      }
     });
   },
 

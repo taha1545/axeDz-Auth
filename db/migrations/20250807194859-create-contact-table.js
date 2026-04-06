@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return await queryInterface.createTable('contacts', {
+    return await queryInterface.createTable("contacts", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,26 +11,30 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       phone: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      message: {
+      subject: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      createdAt: {
+      message: {
+        type: Sequelize.TEXT,
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      updatedAt: {
+      status: {
+        type: Sequelize.ENUM("unread", "read"),
+        allowNull: false,
+        defaultValue: "unread",
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
@@ -39,6 +43,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return await queryInterface.dropTable('contacts');
+    await queryInterface.dropTable("contacts");
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_contacts_status";');
   }
 };

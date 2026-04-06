@@ -1,17 +1,14 @@
 const { ValidationError: ExpressValidationError } = require('express-validator');
 const fs = require('fs');
+const logger = require('../Services/Logger');
 
 function errorHandler(err, req, res, next) {
     //
     const statusCode = err.statusCode || 500;
     const errMessage = err.message || "Internal Server Error";
-
-    if (req.file && req.file.path) {
-        fs.unlink(req.file.path, (err) => {
-            if (err) console.error('Failed to delete file:', err.message);
-        });
-    }
-
+    // Log the error
+    logger.error(`${err.name}: ${errMessage} - ${req.method} ${req.originalUrl} - ${err.stack || ''}`);
+    //
     if (err.code === 'INVALID_FILE_TYPE') {
         return res.status(400).json({
             success: false,

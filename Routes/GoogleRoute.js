@@ -29,9 +29,8 @@ Router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (req, res) => {
         // 
-        const token = Auth.CreateToken({
-            id: req.user.id,
-            role: req.user.role || "client"
+        const token = Auth.CreateAccessToken({
+            id: req.user.id
         });
         //
         res.redirect(`${process.env.FRONT_URL_CALLBACK}?token=${token}`);

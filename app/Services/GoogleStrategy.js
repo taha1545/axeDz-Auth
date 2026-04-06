@@ -14,18 +14,17 @@ passport.use(new GoogleStrategy({
     async (accessToken, refreshToken, profile, done) => {
         try {
             //
-            let user = await db.User.findOne({ where: { googleId: profile.id } });
+            let user = await db.User.findOne({ where: { google_id: profile.id } });
             //
             const randomPassword = crypto.randomBytes(16).toString('hex');
             const hashedPassword = await bcrypt.hash(randomPassword, 10);
             //
             if (!user) {
                 user = await db.User.create({
-                    googleId: profile.id,
+                    google_id: profile.id,
                     password: hashedPassword,
                     name: profile.displayName,
                     email: profile.emails[0].value,
-                    IsVerify: true
                 });
                 //
                 welcomeMail.sendMail(user.email)

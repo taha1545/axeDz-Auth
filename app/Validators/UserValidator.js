@@ -2,12 +2,19 @@ const { body } = require('express-validator');
 const db = require('../../db/models');
 
 const loginValidation = [
-    body('email')
-        .isEmail().withMessage('Valid email is required')
-        .custom(async (email) => {
-            const existingUser = await db.User.findOne({ where: { email } });
+    body('identifier')
+        .notEmpty().withMessage('Email or phone is required')
+        .custom(async (identifier) => {
+            const existingUser = await db.User.findOne({
+                where: {
+                    [db.Sequelize.Op.or]: [
+                        { email: identifier },
+                        { phone: identifier }
+                    ]
+                }
+            });
             if (!existingUser) {
-                throw new Error('Email does not existe');
+                throw new Error('User not found with this email or phone');
             }
         }),
     body('password').notEmpty().withMessage('Password is required'),
@@ -28,20 +35,25 @@ const signupValidation = [
     body('password')
         .isLength({ min: 6 })
         .withMessage('Password must be at least 6 characters'),
+    body('phone').optional().isString().withMessage('Phone must be a string'),
 ];
 
 
-const resetPasswordValidation = [
+const sendResetOtpValidation = [
     body('email')
         .isEmail().withMessage('Valid email is required')
         .custom(async (email) => {
             const existingUser = await db.User.findOne({ where: { email } });
             if (!existingUser) {
-                throw new Error('Email does not existe');
+                throw new Error('Email does not exist');
             }
         }),
-    //
-    body('otp').notEmpty().withMessage('OTP is required'),
+];
+
+const resetPasswordWithOtpValidation = [
+    body('email')
+        .isEmail().withMessage('Valid email is required'),
+    body('otp_code').notEmpty().withMessage('OTP code is required'),
     body('password')
         .isLength({ min: 6 })
         .withMessage('Password must be at least 6 characters'),
@@ -76,10 +88,19 @@ const updateUserValidation = [
         }),
 ];
 
+const refreshTokenValidation = [
+    body('refreshToken')
+        .optional()
+        .isString()
+        .withMessage('refreshToken must be a string'),
+];
+
 module.exports = {
     loginValidation,
     signupValidation,
-    resetPasswordValidation,
+    sendResetOtpValidation,
+    resetPasswordWithOtpValidation,
     updatePasswordValidation,
     updateUserValidation,
+    refreshTokenValidation,
 };

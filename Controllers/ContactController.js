@@ -1,108 +1,105 @@
 const db = require('../db/models');
-const ContactResource = require('../app/Resource/ContactResource');
-const notfoundError = require('../app/Error/NotFoundError');
+const { ContactResource } = require('../app/Resource');
+const { NotFoundError } = require('../app/Error');
 
-const All = async (req, res, next) => {
-    try {
-        //
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const offset = (page - 1) * limit;
-        //
-        const { count, rows } = await db.Contact.findAndCountAll({
-            offset,
+const All = async (req, res) => {
+    //
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    const status = req.query.status || 'unread';
+    //
+    let where = { status };
+    //
+    const { count, rows } = await db.Contact.findAndCountAll({
+        where,
+        offset,
+        limit,
+        order: [['created_at', 'DESC']]
+    });
+    //
+    return res.status(200).json({
+        success: true,
+        message: "Contacts retrieved successfully",
+        data: rows.map(contact => ContactResource(contact)),
+        pagination: {
+            total: count,
+            page,
             limit,
-            order: [['createdAt', 'DESC']]
-        });
-        //
-        return res.status(200).json({
-            success: true,
-            message: "Contacts retrieved successfully",
-            data: rows.map(contact => ContactResource(contact)),
-            pagination: {
-                total: count,
-                page,
-                limit,
-                totalPages: Math.ceil(count / limit)
-            }
-        });
-        //
-    } catch (err) {
-        err.message = "get contact error: " + err.message;
-        next(err);
-    }
+            totalPages: Math.ceil(count / limit)
+        }
+    });
 };
 
-const Show = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const contact = await db.Contact.findByPk(id);
-        if (!contact) {
-            throw new notfoundError('Contact not found');
-        }
-        //
-        return res.status(200).json({
-            success: true,
-            message: "Contact retrieved successfully",
-            data: ContactResource(contact)
-        });
-    } catch (err) {
-        err.message = "Show contact error: " + err.message;
-        next(err);
+const Show = async (req, res) => {
+    const id = req.params.id;
+    const contact = await db.Contact.findByPk(id);
+    if (!contact) {
+        throw new NotFoundError('Contact not found');
     }
+    //
+    return res.status(200).json({
+        success: true,
+        message: "Contact retrieved successfully",
+        data: ContactResource(contact)
+    });
 };
 
-const Create = async (req, res, next) => {
-    try {
-        const { name = null, email = null, phone = null, message = null } = req.body;
-        //
-        if (!message) {
-            throw new Error("message should'nt be null");
-        }
-        //
-        const contact = await db.Contact.create({
-            name,
-            email,
-            phone,
-            message
-        });
-        //
-        return res.status(201).json({
-            success: true,
-            message: "Contact created successfully",
-            data: ContactResource(contact)
-        });
-    } catch (err) {
-        err.message = "Create contact error: " + err.message;
-        next(err);
-    }
+const Create = async (req, res) => {
+    const { name, email, phone = null, subject, message, status = "unread" } = req.body;
+    const contact = await db.Contact.create({
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        status
+    });
+    //
+    return res.status(201).json({
+        success: true,
+        message: "Contact created successfully",
+        data: ContactResource(contact)
+    });
 };
 
-const Delete = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const contact = await db.Contact.findByPk(id);
-        //
-        if (!contact) {
-            throw new notfoundError('Contact not found');
-        }
-        //
-        await contact.destroy();
-        //
-        return res.status(200).json({
-            success: true,
-            message: "Contact deleted successfully"
-        });
-        //
-    } catch (err) {
-        err.message = "Delete contact error: " + err.message;
-        next(err);
+const Update = async (req, res) => {
+    const id = req.params.id;
+    const contact = await db.Contact.findByPk(id);
+    if (!contact) {
+        throw new NotFoundError('Contact not found');
     }
+    //
+    contact.status = req.body.status;
+    await contact.save();
+    //
+    return res.status(200).json({
+        success: true,
+        message: "Contact updated successfully",
+        data: ContactResource(contact)
+    });
+};
+
+const Delete = async (req, res) => {
+    const id = req.params.id;
+    const contact = await db.Contact.findByPk(id);
+    //
+    if (!contact) {
+        throw new NotFoundError('Contact not found');
+    }
+    //
+    await contact.destroy();
+    //
+    return res.status(200).json({
+        success: true,
+        message: "Contact deleted successfully"
+    });
 };
 
 module.exports = {
     All,
     Show,
     Create,
+    Update,
     Delete
 };
