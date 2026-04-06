@@ -31,27 +31,3 @@ A production-ready authentication and user management service built with Node.js
 ## API Documentation
 
 See `API_DOCUMENTATION.md` for detailed API endpoints and usage.
-
-
-```
-
-## Project Structure
-
-```
-├── app/
-│   ├── Controllers/     # Route handlers
-│   ├── Middlewares/     # Express middlewares
-│   ├── Services/        # Business logic
-│   ├── Validators/      # Input validation
-│   ├── Resource/        # Response transformers
-│   ├── Error/           # Custom error classes
-│   └── s3/              # S3 utilities
-├── config/              # Configuration files
-├── db/                  # Database migrations and models
-├── public/              # Static files and email templates
-├── Routes/              # API routes
-├── logs/                # Application logs
-├── Dockerfile           # Docker configuration
-├── .env.example         # Environment variables template
-└── API_DOCUMENTATION.md # API docs
-```
