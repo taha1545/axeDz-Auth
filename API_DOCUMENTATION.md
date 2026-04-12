@@ -292,7 +292,47 @@
 
 ---
 
-## 🔑 OAuth Endpoints
+## � Storage / File Management Endpoints
+
+### 1. Get Signed File URL
+**GET** `/storage/file/:fileKey`
+- **Auth:** None
+- **Params:** `fileKey` (string, the S3 file key/path)
+- **Query Params:**
+  - `expiresIn` (number, optional, default: 3600, URL expiration in seconds)
+- **Description:** Generates a signed URL to access files stored in S3. This URL can be used to download or view the file directly.
+- **Response:** (200)
+  ```json
+  {
+    "success": true,
+    "message": "Signed URL generated successfully",
+    "data": {
+      "success": true,
+      "url": "https://your-bucket.s3.amazonaws.com/user/image.jpg?X-Amz-Algorithm=..."
+    }
+  }
+  ```
+
+### 2. Delete File from Storage
+**DELETE** `/storage/file/:fileKey`
+- **Auth:** Bearer Token (required)
+- **Params:** `fileKey` (string, the S3 file key/path)
+- **Description:** Deletes a file from S3 storage.
+- **Response:** (200)
+  ```json
+  {
+    "success": true,
+    "message": "File deleted successfully",
+    "data": {
+      "success": true,
+      "deleted": "user/image.jpg"
+    }
+  }
+  ```
+
+---
+
+## �🔑 OAuth Endpoints
 
 ### 1. Google Sign In
 **GET** `/google`

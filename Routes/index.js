@@ -10,6 +10,7 @@ const { Handle, RequestLogger } = require('../app/Middlewares');
 const AuthRouter = require("./AuthRoute");
 const GoogleRouter = require("./GoogleRoute");
 const ContactRouter = require("./ContactRoute");
+const StorageRouter = require("./StorageRoute");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/auth', AuthRouter);
 app.use('/auth', GoogleRouter);
 app.use('/contacts', ContactRouter);
+app.use('/storage', StorageRouter);
 
 //
 app.get('/', (req, res) => {
