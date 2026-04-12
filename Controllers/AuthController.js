@@ -1,14 +1,17 @@
+//
 const { Auth, WelcomeMail, SmsOtp, OtpService, TokenSession } = require("../app/Services");
 const { UserResource } = require("../app/Resource");
 const { AuthError, NotFoundError } = require("../app/Error");
 const db = require("../db/models");
 const bcrypt = require("bcrypt");
+const OtpMail = require("../app/Services/OtpMail");
 
 const signUp = async (req, res) => {
+  //
   const { name, email, phone, password } = req.body;
   const imagePath = req.file ? req.file.path : null;
-  const hashedPassword = await bcrypt.hash(password, 10);
   //
+  const hashedPassword = await bcrypt.hash(password, 10);
   const user = await db.User.create({
     name,
     email,
@@ -43,7 +46,9 @@ const signUp = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  //
   const { identifier, password } = req.body;
+  //
   const user = await db.User.findOne({
     where: {
       [db.Sequelize.Op.or]: [
@@ -55,7 +60,6 @@ const login = async (req, res) => {
   if (!user) {
     throw new NotFoundError("User not found with this email or phone");
   }
-  //
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new AuthError("Invalid password");
@@ -72,7 +76,6 @@ const login = async (req, res) => {
   });
 };
 
-//
 const sendResetOtp = async (req, res) => {
   const { email } = req.body;
   const user = await db.User.findOne({ where: { email } });
@@ -85,7 +88,6 @@ const sendResetOtp = async (req, res) => {
     userId: user.id,
     type: "resetPassword",
   });
-  const OtpMail = require("../app/Services/OtpMail");
   await OtpMail.sendOtp(user.email, otpCode);
   //
   return res.status(200).json({

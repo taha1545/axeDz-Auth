@@ -17,14 +17,9 @@ const bruteForceDelay = rateLimit({
   legacyHeaders: false,
 });
 
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+
 
 module.exports = {
   authLimiter,
   bruteForceDelay,
-  corsOptions,
 };

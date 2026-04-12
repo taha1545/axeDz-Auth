@@ -1,7 +1,7 @@
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
-const s3Client = require("../config/s3");
+const s3Client = require("../../config/s3");
 
 const ALLOWED_EXTENSIONS = /jpeg|jpg|png|gif|webp|heic|heif/;
 const ALLOWED_MIME_TYPES = new Set([

@@ -9,28 +9,28 @@ const { validate } = require('../app/Middlewares');
 const Security = require('../app/Middlewares/Security');
 
 //
-Router.post('/signup', Security.authLimiter, Upload.single('image'), UserValidation.signupValidation, Validate, AuthController.signUp);
+Router.post('/signup', Security.authLimiter, Upload.single('image'), UserValidator.signupValidation, validate, AuthController.signUp);
 
-Router.post('/login', Security.authLimiter, Security.bruteForceDelay, UserValidation.loginValidation, Validate, AuthController.login);
+Router.post('/login', Security.authLimiter, Security.bruteForceDelay, UserValidator.loginValidation, validate, AuthController.login);
 
-Router.post('/send-reset-otp', Security.authLimiter, UserValidation.sendResetOtpValidation, Validate, AuthController.sendResetOtp);
+Router.post('/send-reset-otp', Security.authLimiter, UserValidator.sendResetOtpValidation, validate, AuthController.sendResetOtp);
 
-Router.put('/reset-password-otp', Security.authLimiter, UserValidation.resetPasswordWithOtpValidation, Validate, AuthController.resetPasswordWithOtp);
+Router.put('/reset-password-otp', Security.authLimiter, UserValidator.resetPasswordWithOtpValidation, validate, AuthController.resetPasswordWithOtp);
 
-Router.patch('/reset-password', Auth.checkAuth, UserValidation.updatePasswordValidation, Validate, AuthController.resetPassword);
-Router.post('/refresh-token', UserValidation.refreshTokenValidation, Validate, AuthController.refreshAccessToken);
+Router.patch('/reset-password', Auth.checkAuth, UserValidator.updatePasswordValidation, validate, AuthController.resetPassword);
+Router.post('/refresh-token', UserValidator.refreshTokenValidation, validate, AuthController.refreshAccessToken);
 Router.post('/logout', AuthController.logout);
 
 // 
 
 Router.get('/me', Auth.checkAuth, UserController.getUserByToken);
 
-Router.put('/update', Auth.checkAuth, UserValidation.updateUserValidation, Validate, UserController.updateUserByToken);
+Router.put('/update', Auth.checkAuth, UserValidator.updateUserValidation, validate, UserController.updateUserByToken);
 
 //
-Router.post('/send-verify-sms-otp', Security.authLimiter, ContactValidation.sendVerifySmsValidation, Validate, VerifyController.sendVerifySmsOtp);
+Router.post('/send-verify-sms-otp', Security.authLimiter, ContactValidator.sendVerifySmsValidation, validate, VerifyController.sendVerifySmsOtp);
 
-Router.put('/verify-sms', Security.authLimiter, ContactValidation.verifySmsValidation, Validate, VerifyController.verifySmsOtp);
+Router.put('/verify-sms', Security.authLimiter, ContactValidator.verifySmsValidation, validate, VerifyController.verifySmsOtp);
 
 // 
 Router.get('/', Auth.checkAuth, UserController.getAllUsers);
