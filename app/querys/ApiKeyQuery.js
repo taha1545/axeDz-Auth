@@ -1,4 +1,4 @@
-const db = require('../../../db/models');
+const db = require('../../db/models');
 const { Op } = db.Sequelize;
 
 const buildListQuery = ({ search, status, project_name, key, page = 1, limit = 30 } = {}) => {
