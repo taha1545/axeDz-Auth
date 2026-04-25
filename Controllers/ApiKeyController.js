@@ -117,7 +117,6 @@ const validateApiKey = async (req, res) => {
         where: {
             key: req.body.key,
             status: 'active',
-            user_id: req.user.id,
         },
     });
     if (!apiKey) throw new NotFoundError('API key not found or inactive');
