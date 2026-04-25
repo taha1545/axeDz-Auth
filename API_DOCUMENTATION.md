@@ -28,7 +28,7 @@
 - `DELETE /contacts/:id` — delete contact
 
 ### API Key Management
-- `POST /api-keys` — create API key
+- `POST /api-keys` — create API key (generates key, secret, defaults status to active)
 - `POST /api-keys/validate` — validate active key
 - `GET /api-keys` — list keys with `search`, `status`, `project_name`, `key`, `page`, `limit`
 - `GET /api-keys/:id` — get key by id
@@ -42,12 +42,10 @@
 ### Create API Key
 ```json
 {
-  "project_name": "My Project",
-  "key": "550e8400-e29b-41d4-a716-446655440000",
-  "secret_hash": "hashed-secret",
-  "status": "active"
+  "project_name": "My Project"
 }
 ```
+*Note: `key`, `secret`, and `status` are auto-generated if not provided. Status defaults to "active".*
 
 ### Validate API Key
 ```json

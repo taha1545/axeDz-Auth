@@ -2,20 +2,28 @@ const { ApiKeyResource } = require('../app/Resource');
 const { NotFoundError } = require('../app/Error');
 const db = require('../db/models');
 const ApiKeyQuery = require('../app/querys/ApiKeyQuery');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const createApiKey = async (req, res) => {
+    //
+    const key = crypto.randomUUID();
+    const secret = crypto.randomBytes(32).toString('hex');
+    const secret_hash = await bcrypt.hash(secret, 10);
+    const status = 'active';
     //
     const apiKey = await db.ApiKey.create({
         user_id: req.user.id,
         project_name: req.body.project_name,
-        secret_hash: req.body.secret_hash,
-        status: req.body.status,
-        key: req.body.key,
+        secret_hash,
+        status,
+        key,
     });
     //
     res.status(201).json({
         success: true,
         apiKey: ApiKeyResource(apiKey),
+        secret,
     });
 };
 
@@ -75,7 +83,7 @@ const updateApiKey = async (req, res) => {
     //
     if (!apiKey) throw new NotFoundError('API key not found');
     //
-    ['project_name', 'key', 'secret_hash', 'status'].forEach((field) => {
+    ['project_name', 'status'].forEach((field) => {
         if (req.body[field] !== undefined) {
             apiKey[field] = req.body[field];
         }
