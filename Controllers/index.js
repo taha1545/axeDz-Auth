@@ -3,6 +3,7 @@ const UserController = require('./UserController');
 const ContactController = require('./ContactController');
 const VerifyController = require('./VerifyController');
 const StorageController = require('./StorageController');
+const ApiKeyController = require('./ApiKeyController');
 
 module.exports = {
   AuthController,
@@ -10,4 +11,5 @@ module.exports = {
   ContactController,
   VerifyController,
   StorageController,
+  ApiKeyController,
 };

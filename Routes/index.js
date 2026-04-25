@@ -11,6 +11,7 @@ const AuthRouter = require("./AuthRoute");
 const GoogleRouter = require("./GoogleRoute");
 const ContactRouter = require("./ContactRoute");
 const StorageRouter = require("./StorageRoute");
+const ApiKeyRouter = require("./ApiKeyRoute");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/auth', AuthRouter);
 app.use('/auth', GoogleRouter);
 app.use('/contacts', ContactRouter);
 app.use('/storage', StorageRouter);
+app.use('/api-keys', ApiKeyRouter);
 
 //
 app.get('/', (req, res) => {
